@@ -13,3 +13,11 @@ export interface Lib {
   copies: number;
   available: boolean;
 }
+
+export interface LibBorrow {
+  book: string;
+  quantity: number;
+  dueDate: string;
+}
+
+

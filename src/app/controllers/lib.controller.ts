@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LibModel } from "../models/lib.model";
+import { LibBorrowModel, LibModel } from "../models/lib.model";
 import { handleErrorResponse } from "../utils/errorHandler";
 import { sendResponse } from "../utils/sendResponse";
 
@@ -41,6 +41,7 @@ export const getBook = async (req: Request, res: Response) => {
   } catch (error: any) {
     handleErrorResponse(res, error);
   }
+  
 };
 export const getBookById = async (
   req: Request,
@@ -103,16 +104,43 @@ export const deleteBookById = async (
 
 export const borrowBook = async (req: Request, res: Response) => {
   try {
-    const book = new LibModel(req.body);
-    const savedBorrowBook = await book.save();
+    const { book, quantity, dueDate } = req.body;
+
+    // Check and update copies & availability
+    await LibModel.updateAvailability(book, quantity);
+
+    // Save borrow record
+    const borrowRecord = new LibBorrowModel({
+      book,
+      quantity,
+      dueDate,
+    });
+
+    const savedBorrow = await borrowRecord.save();
 
     sendResponse({
       res,
       statusCode: 201,
       message: "Book borrowed successfully",
-      data: savedBorrowBook,
+      data: savedBorrow,
     });
   } catch (error: any) {
     handleErrorResponse(res, error);
   }
 };
+
+export const getBorrowedBooks = async (req: Request, res: Response) => {
+  try {
+    const borrowedBooks = await LibBorrowModel.find();
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Borrowed books retrieved successfully",
+      data: borrowedBooks,
+    });
+  } catch (error: any) {
+    handleErrorResponse(res, error);
+    
+  }
+}
+
