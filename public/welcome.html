@@ -6,17 +6,6 @@
     <title>Library Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://img.icons8.com/emoji/48/open-book.png" />
-  </head>
-  <body class="bg-gradient-to-r from-teal-500 to-blue-600 h-screen flex items-center justify-center">
-    <div class="text-center animate-fade-in-up">
-      <h1 class="text-5xl font-extrabold text-white drop-shadow-md mb-4">
-        📚 Welcome to the Library API
-      </h1>
-      <p class="text-xl text-gray-100 font-light">
-        Your gateway to managing books, users, and more.
-      </p>
-    </div>
-
     <style>
       @keyframes fadeInUp {
         from {
@@ -30,26 +19,130 @@
       }
 
       .animate-fade-in-up {
-        animation: fadeInUp 1.5s ease-out;
+        animation: fadeInUp 1s ease-out both;
       }
     </style>
+  </head>
+  <body class="bg-gradient-to-br from-teal-600 to-blue-800 text-white min-h-screen p-6">
+    <div class="max-w-5xl mx-auto space-y-10 animate-fade-in-up">
+      <header class="text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">
+          📚 Library Management System
+        </h1>
+        <p class="text-lg text-gray-100 font-light">
+          A RESTful API for managing books and borrow records using
+          <span class="font-semibold text-white">Express</span>,
+          <span class="font-semibold text-white">TypeScript</span>, and
+          <span class="font-semibold text-white">MongoDB</span>.
+        </p>
+        <a
+          href="https://library-management-two-alpha.vercel.app/"
+          target="_blank"
+          class="inline-block mt-4 px-6 py-2 bg-white text-blue-700 rounded-full font-semibold shadow hover:bg-gray-100 transition"
+        >
+          ▶️ Visit Project Overview
+        </a>
+      </header>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">🚀 Features</h2>
+        <ul class="list-disc list-inside text-gray-200 space-y-1">
+          <li>CRUD operations on books</li>
+          <li>Borrowing system with real-time copy tracking</li>
+          <li>Clean Interface → Model → Controller structure</li>
+          <li>Full TypeScript support</li>
+          <li>MongoDB with Mongoose for flexible data models</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">🧰 Tech Stack</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center text-gray-100">
+          <span class="bg-teal-700 py-2 rounded">Node.js</span>
+          <span class="bg-teal-700 py-2 rounded">Express</span>
+          <span class="bg-teal-700 py-2 rounded">TypeScript</span>
+          <span class="bg-teal-700 py-2 rounded">MongoDB</span>
+          <span class="bg-teal-700 py-2 rounded">Mongoose</span>
+          <span class="bg-teal-700 py-2 rounded">Vercel</span>
+        </div>
+      </section>
+ <h2 class="text-2xl font-semibold mb-2">
+    🛠️ Setup Instructions <span id="blurDaysText" class="text-sm text-gray-300 font-light">(Blurred until June 28, 2025)</span>
+  </h2>
+     
+<pre id="setupInstructions"
+
+  title="This content is locked until June 28, 2025"
+  class="bg-gray-900 p-4 rounded overflow-x-auto text-sm leading-relaxed text-gray-300 blur-sm select-none transition-all duration-700">
+git clon xyz://hidden-path/lib-mgmt-ts
+cd lib-mgmt-tz
+nmp isnstall
+
+PORT=XXXX
+DATABASE_URL=mongodb://xxx.xxx.xxx.xxx:xxxx/fake_db
+
+# Development
+npm rnu dev
+
+# Production
+npm rnu bild
+npm starrt
+</pre>
+
+
+
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">✨ Optional but Helpful</h2>
+        <pre class="bg-gray-900 p-4 rounded overflow-x-auto text-sm leading-relaxed">
+# Clear cache and run ESLint
+npx eslint . --ext .ts --no-cache
+        </pre>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">❓ Support Session Topics</h2>
+        <ol class="list-decimal list-inside text-gray-200 space-y-1">
+          <li>Understanding MongoDB `$lookup`</li>
+          <li>Explanation of line 5 in `lib.model.ts`</li>
+          <li>Use of `app.use` in `app.ts`</li>
+          <li>Handling low copy count logic</li>
+          <li>Guidelines for video submission</li>
+          <li>Fixing Vercel deployment warnings</li>
+        </ol>
+      </section>
+
+      <footer class="text-center text-sm text-gray-300 mt-10">
+        Made with ❤️ by <a href="https://eshrakg.netlify.app" target="_blank" class="underline">Eshrak</a>
+      </footer>
+    </div>
   </body>
+  <!-- Script for blur duration and blur -->
+<script>
+  const targetDate = new Date("2025-06-28T00:00:00Z");
+  const now = new Date();
+  const el = document.getElementById("setupInstructions");
+
+  if (now >= targetDate && el) {
+    el.classList.remove("blur-sm", "select-none");
+    el.textContent = `git clone https://github.com/Eshrak20/lib-mgmt-ts
+cd lib-mgmt-ts
+npm install
+
+PORT=5000
+DATABASE_URL=mongodb://127.0.0.1:27017/library_db
+
+# Development
+npm run dev
+
+# Production
+npm run build
+npm start`;
+  }
+</script>
+
+
+
+
+
 </html>
-<script>
-  // Tailwind CSS configuration for custom animations
-  tailwind.config = {
-    theme: {
-      extend: {
-        animation: {
-          'fade-in-up': 'fadeInUp 1.5s ease-out',
-        },
-      },
-    },
-  };
-</script>
-<script>
-  // Ensure the Tailwind CSS CDN is loaded before applying styles
-  document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('bg-gradient-to-r', 'from-teal-500', 'to-blue-600');
-  });
-</script>
