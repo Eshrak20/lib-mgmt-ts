@@ -44,7 +44,7 @@ const getBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         (0, sendResponse_1.sendResponse)({
             res,
             statusCode: 201,
-            message: "Book get successfully",
+            message: "Books retrieved successfully",
             data: books,
         });
     }
@@ -57,6 +57,13 @@ const getBookById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const getById = req.params.id;
         const book = yield lib_model_1.LibModel.findById(getById);
+        if (!book) {
+            // This is for not show the delete book
+            res.status(404).json({
+                success: false,
+                message: "Book not found",
+            });
+        }
         (0, sendResponse_1.sendResponse)({
             res,
             statusCode: 200,
@@ -75,7 +82,11 @@ const updateBookById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const updateData = req.body;
         const book = yield lib_model_1.LibModel.findByIdAndUpdate(getById, updateData, {
             new: true,
+            runValidators: true,
         });
+        if (!book) {
+            throw new Error("Book not found");
+        }
         (0, sendResponse_1.sendResponse)({
             res,
             statusCode: 200,
@@ -104,12 +115,11 @@ const deleteBookById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteBookById = deleteBookById;
+//? Borrowing Books is starting from here
 const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { book, quantity, dueDate } = req.body;
-        // Check and update copies & availability
         yield lib_model_1.LibModel.updateAvailability(book, quantity);
-        // Save borrow record
         const borrowRecord = new lib_model_1.LibBorrowModel({
             book,
             quantity,
@@ -130,11 +140,43 @@ const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.borrowBook = borrowBook;
 const getBorrowedBooks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const borrowedBooks = yield lib_model_1.LibBorrowModel.find();
+        // const borrowedBooks = await LibBorrowModel.find();
+        const borrowedBooks = yield lib_model_1.LibBorrowModel.aggregate([
+            {
+                $group: {
+                    _id: "$book",
+                    totalQuantity: { $sum: "$quantity" },
+                },
+            },
+            {
+                $lookup: {
+                    from: "libmodels",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "book",
+                },
+            },
+            {
+                $unwind: "$book",
+            },
+            {
+                $project: {
+                    _id: false,
+                    book: {
+                        title: "$book.title",
+                        isbn: "$book.isbn",
+                    },
+                    totalQuantity: true,
+                },
+            },
+        ]);
+        if (!borrowedBooks) {
+            throw new Error("Book not found");
+        }
         (0, sendResponse_1.sendResponse)({
             res,
             statusCode: 200,
-            message: "Borrowed books retrieved successfully",
+            message: "Borrowed books summary retrieved successfully",
             data: borrowedBooks,
         });
     }

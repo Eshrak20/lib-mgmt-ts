@@ -49,6 +49,7 @@ const libSchema = new mongoose_1.Schema({
     copies: {
         type: Number,
         required: true,
+        min: 0
     },
     available: {
         type: Boolean,
@@ -60,8 +61,9 @@ const libSchema = new mongoose_1.Schema({
 });
 const libBorrowSchema = new mongoose_1.Schema({
     book: {
-        type: String,
+        type: mongoose_1.Schema.Types.ObjectId,
         required: true,
+        ref: "LibModel"
     },
     quantity: {
         type: Number,
@@ -91,6 +93,9 @@ libSchema.statics.updateAvailability = function (id, quantity) {
                 book.available = false;
             }
             yield book.save();
+        }
+        else {
+            throw new Error("Book not found");
         }
     });
 };

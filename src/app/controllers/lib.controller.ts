@@ -49,7 +49,8 @@ export const getBookById = async (
   try {
     const getById = req.params.id;
     const book = await LibModel.findById(getById);
-    if (!book) { // This is for not show the delete book 
+    if (!book) {
+      // This is for not show the delete book
       res.status(404).json({
         success: false,
         message: "Book not found",
@@ -78,7 +79,9 @@ export const updateBookById = async (
       new: true,
       runValidators: true,
     });
-
+    if (!book) {
+      throw new Error("Book not found");
+    }
     sendResponse({
       res,
       statusCode: 200,
@@ -109,7 +112,7 @@ export const deleteBookById = async (
   }
 };
 
-//! Borrowing Books is starting from here
+//? Borrowing Books is starting from here
 
 export const borrowBook = async (req: Request, res: Response) => {
   try {
@@ -169,7 +172,9 @@ export const getBorrowedBooks = async (req: Request, res: Response) => {
         },
       },
     ]);
-
+    if (!borrowedBooks) {
+      throw new Error("Book not found");
+    }
     sendResponse({
       res,
       statusCode: 200,
