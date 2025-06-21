@@ -35,13 +35,12 @@ export const getBook = async (req: Request, res: Response) => {
     sendResponse({
       res,
       statusCode: 201,
-      message: "Book get successfully",
+      message: "Books retrieved successfully",
       data: books,
     });
   } catch (error: any) {
     handleErrorResponse(res, error);
   }
-  
 };
 export const getBookById = async (
   req: Request,
@@ -50,6 +49,13 @@ export const getBookById = async (
   try {
     const getById = req.params.id;
     const book = await LibModel.findById(getById);
+    if (!book) { // This is for not show the delete book 
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+    }
+
     sendResponse({
       res,
       statusCode: 200,
@@ -70,6 +76,7 @@ export const updateBookById = async (
     const updateData = req.body;
     const book = await LibModel.findByIdAndUpdate(getById, updateData, {
       new: true,
+      runValidators: true,
     });
 
     sendResponse({
@@ -102,14 +109,14 @@ export const deleteBookById = async (
   }
 };
 
+//! Borrowing Books is starting from here
+
 export const borrowBook = async (req: Request, res: Response) => {
   try {
     const { book, quantity, dueDate } = req.body;
 
-    // Check and update copies & availability
     await LibModel.updateAvailability(book, quantity);
 
-    // Save borrow record
     const borrowRecord = new LibBorrowModel({
       book,
       quantity,
@@ -131,16 +138,45 @@ export const borrowBook = async (req: Request, res: Response) => {
 
 export const getBorrowedBooks = async (req: Request, res: Response) => {
   try {
-    const borrowedBooks = await LibBorrowModel.find();
+    // const borrowedBooks = await LibBorrowModel.find();
+
+    const borrowedBooks = await LibBorrowModel.aggregate([
+      {
+        $group: {
+          _id: "$book",
+          totalQuantity: { $sum: "$quantity" },
+        },
+      },
+      {
+        $lookup: {
+          from: "libmodels",
+          localField: "_id",
+          foreignField: "_id",
+          as: "book",
+        },
+      },
+      {
+        $unwind: "$book",
+      },
+      {
+        $project: {
+          _id: false,
+          book: {
+            title: "$book.title",
+            isbn: "$book.isbn",
+          },
+          totalQuantity: true,
+        },
+      },
+    ]);
+
     sendResponse({
       res,
       statusCode: 200,
-      message: "Borrowed books retrieved successfully",
+      message: "Borrowed books summary retrieved successfully",
       data: borrowedBooks,
     });
   } catch (error: any) {
     handleErrorResponse(res, error);
-    
   }
-}
-
+};

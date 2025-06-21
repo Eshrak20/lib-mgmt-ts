@@ -1,0 +1,55 @@
+<!-- public/welcome.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Library Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://img.icons8.com/emoji/48/open-book.png" />
+  </head>
+  <body class="bg-gradient-to-r from-teal-500 to-blue-600 h-screen flex items-center justify-center">
+    <div class="text-center animate-fade-in-up">
+      <h1 class="text-5xl font-extrabold text-white drop-shadow-md mb-4">
+        📚 Welcome to the Library API
+      </h1>
+      <p class="text-xl text-gray-100 font-light">
+        Your gateway to managing books, users, and more.
+      </p>
+    </div>
+
+    <style>
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 1.5s ease-out;
+      }
+    </style>
+  </body>
+</html>
+<script>
+  // Tailwind CSS configuration for custom animations
+  tailwind.config = {
+    theme: {
+      extend: {
+        animation: {
+          'fade-in-up': 'fadeInUp 1.5s ease-out',
+        },
+      },
+    },
+  };
+</script>
+<script>
+  // Ensure the Tailwind CSS CDN is loaded before applying styles
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('bg-gradient-to-r', 'from-teal-500', 'to-blue-600');
+  });
+</script>

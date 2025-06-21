@@ -1,4 +1,3 @@
-// app/utils/sendResponse.ts
 
 import { Response } from "express";
 

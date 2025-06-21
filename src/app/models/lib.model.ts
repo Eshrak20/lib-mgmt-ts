@@ -2,8 +2,9 @@ import { Model, model, Schema } from "mongoose";
 import { Lib, LibBorrow } from "../interfaces/lib.interface";
 
 interface LibModelType extends Model<Lib> {
+  // eslint-disable-next-line no-unused-vars
   updateAvailability(id: string, quantity: number): Promise<void>;
-} //! eta charaw kaj kore , but keno kore ar etar kaj taie ba ki . ekhono clear na 
+} 
 const libSchema = new Schema<Lib,LibModelType>(
   {
     title: {
@@ -43,6 +44,7 @@ const libSchema = new Schema<Lib,LibModelType>(
     copies: {
       type: Number,
       required: true,
+      min: 0
     },
     available: {
       type: Boolean,
@@ -57,8 +59,9 @@ const libSchema = new Schema<Lib,LibModelType>(
 const libBorrowSchema = new Schema(
   {
     book: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
+      ref: "LibModel"
     },
     quantity: {
       type: Number,
@@ -94,6 +97,9 @@ libSchema.statics.updateAvailability = async function (
     }
 
     await book.save();
+  }
+  else {
+    throw new Error("Book not found");
   }
 };
 

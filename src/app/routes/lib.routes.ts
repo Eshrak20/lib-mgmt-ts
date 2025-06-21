@@ -1,5 +1,13 @@
 import express from "express";
-import { borrowBook, createBook, deleteBookById, getBook, getBookById, getBorrowedBooks, updateBookById } from "../controllers/lib.controller";
+import {
+  borrowBook,
+  createBook,
+  deleteBookById,
+  getBook,
+  getBookById,
+  getBorrowedBooks,
+  updateBookById,
+} from "../controllers/lib.controller";
 
 const router = express.Router();
 
@@ -11,6 +19,5 @@ router.delete("/book/:id", deleteBookById);
 
 router.post("/borrow", borrowBook);
 router.get("/borrow", getBorrowedBooks);
-
 
 export default router;
