@@ -4,7 +4,6 @@ import { Lib, LibBorrow } from "../interfaces/lib.interface";
 interface LibModelType extends Model<Lib> {
   updateAvailability(id: string, quantity: number): Promise<void>;
 } //! eta charaw kaj kore , but keno kore ar etar kaj taie ba ki . ekhono clear na 
-
 const libSchema = new Schema<Lib,LibModelType>(
   {
     title: {
