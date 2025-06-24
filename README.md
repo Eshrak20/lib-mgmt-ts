@@ -64,3 +64,4 @@ npx eslint . --ext .ts --no-cache
 4. if copy is less than 1 then if any issue in assignment
 5. about video submission
 6. vercel deploy waring
+7. structure of static method: libSchema.statics.updateAvailability = async function (...) { ... }

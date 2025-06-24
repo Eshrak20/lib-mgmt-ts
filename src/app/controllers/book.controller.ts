@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { LibBorrowModel, LibModel } from "../models/lib.model";
 import { handleErrorResponse } from "../utils/errorHandler";
 import { sendResponse } from "../utils/sendResponse";
+import { LibModel } from "../models/book.model";
 
 export const createBook = async (req: Request, res: Response) => {
   try {
@@ -20,7 +20,7 @@ export const createBook = async (req: Request, res: Response) => {
 };
 export const getBook = async (req: Request, res: Response) => {
   try {
-    const sortBy = req.query.sortBy as string;
+    const sortBy = (req.query.sortBy as string) || "createdAt";
     const sortOrder = req.query.sort === "asc" ? 1 : -1;
     const limit = parseInt(req.query.limit as string) || 10;
 
@@ -99,8 +99,12 @@ export const deleteBookById = async (
 ): Promise<void> => {
   try {
     const getById = req.params.id;
-    await LibModel.findByIdAndDelete(getById);
-
+    const book = await LibModel.findByIdAndDelete(getById,{
+      runValidators: true,
+    });
+    if (!book) {
+      throw new Error("Book not found");
+    }
     sendResponse({
       res,
       statusCode: 200,
@@ -113,75 +117,3 @@ export const deleteBookById = async (
 };
 
 //? Borrowing Books is starting from here
-
-export const borrowBook = async (req: Request, res: Response) => {
-  try {
-    const { book, quantity, dueDate } = req.body;
-
-    await LibModel.updateAvailability(book, quantity);
-
-    const borrowRecord = new LibBorrowModel({
-      book,
-      quantity,
-      dueDate,
-    });
-
-    const savedBorrow = await borrowRecord.save();
-
-    sendResponse({
-      res,
-      statusCode: 201,
-      message: "Book borrowed successfully",
-      data: savedBorrow,
-    });
-  } catch (error: any) {
-    handleErrorResponse(res, error);
-  }
-};
-
-export const getBorrowedBooks = async (req: Request, res: Response) => {
-  try {
-    // const borrowedBooks = await LibBorrowModel.find();
-
-    const borrowedBooks = await LibBorrowModel.aggregate([
-      {
-        $group: {
-          _id: "$book",
-          totalQuantity: { $sum: "$quantity" },
-        },
-      },
-      {
-        $lookup: {
-          from: "libmodels",
-          localField: "_id",
-          foreignField: "_id",
-          as: "book",
-        },
-      },
-      {
-        $unwind: "$book",
-      },
-      {
-        $project: {
-          _id: false,
-          book: {
-            title: "$book.title",
-            isbn: "$book.isbn",
-          },
-          totalQuantity: true,
-        },
-      },
-    ]);
-    if (!borrowedBooks) {
-      throw new Error("Book not found");
-    }
-    sendResponse({
-      res,
-      statusCode: 200,
-      message: "Borrowed books summary retrieved successfully",
-      data: borrowedBooks,
-    });
-  } catch (error: any) {
-    handleErrorResponse(res, error);
-  }
-};

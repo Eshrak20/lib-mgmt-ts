@@ -14,10 +14,5 @@ export interface Lib {
   available: boolean;
 }
 
-export interface LibBorrow {
-  book: string;
-  quantity: number;
-  dueDate: string;
-}
 
 

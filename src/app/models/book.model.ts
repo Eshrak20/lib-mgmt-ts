@@ -1,11 +1,12 @@
 import { Model, model, Schema } from "mongoose";
-import { Lib, LibBorrow } from "../interfaces/lib.interface";
+import { Lib } from "../interfaces/book.interface";
+
 
 interface LibModelType extends Model<Lib> {
   // eslint-disable-next-line no-unused-vars
   updateAvailability(id: string, quantity: number): Promise<void>;
-} 
-const libSchema = new Schema<Lib,LibModelType>(
+}
+const libSchema = new Schema<Lib, LibModelType>(
   {
     title: {
       type: String,
@@ -44,33 +45,11 @@ const libSchema = new Schema<Lib,LibModelType>(
     copies: {
       type: Number,
       required: true,
-      min: 0
+      min: 0,
     },
     available: {
       type: Boolean,
       default: true,
-    },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
-);
-const libBorrowSchema = new Schema(
-  {
-    book: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "LibModel"
-    },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    dueDate: {
-      type: String,
-      required: true,
     },
   },
   {
@@ -97,11 +76,9 @@ libSchema.statics.updateAvailability = async function (
     }
 
     await book.save();
-  }
-  else {
+  } else {
     throw new Error("Book not found");
   }
 };
 
-export const LibBorrowModel = model<LibBorrow>("LibBorrowModel",libBorrowSchema)
-export const LibModel = model<Lib,LibModelType>("LibModel", libSchema);
+export const LibModel = model<Lib, LibModelType>("LibModel", libSchema);
